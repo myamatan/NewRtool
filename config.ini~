@@ -1,0 +1,18 @@
+[Config]
+#Device name in /dev/
+device_relay = /dev/ttyUSB0
+device_fluke = /dev/ttyACM0
+
+# QC location (CERN  or JAPAN)
+QC_location = CERN
+
+# Auto range setting
+auto_range = false
+
+# Criteria
+target_resistivity = 0.85
+upper_limit = 3.  
+lower_limit = 3. 
+
+# Option
+initial_id = 0
