@@ -32,6 +32,7 @@ void read_config(ptree pt){
 	else {
 		std::cout << "QC_location is nothing" << std::endl;
 	}
+	// Target resistivity 
 	
 	// Target resistivity 
 	if (boost::optional<double> value = pt.get_optional<double>("Config.target_resistivity")) {

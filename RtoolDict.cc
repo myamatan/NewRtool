@@ -6,7 +6,6 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 #include <assert.h>
 #define G__DICTIONARY
@@ -41,40 +40,6 @@ namespace std {} using namespace std;
 #include "Rtool.hh"
 
 // Header files passed via #pragma extra_include
-
-namespace ROOT {
-   static void *new_Rtool(void *p = 0);
-   static void *newArray_Rtool(Long_t size, void *p);
-   static void delete_Rtool(void *p);
-   static void deleteArray_Rtool(void *p);
-   static void destruct_Rtool(void *p);
-   static void streamer_Rtool(TBuffer &buf, void *obj);
-
-   // Function generating the singleton type initializer
-   static TGenericClassInfo *GenerateInitInstanceLocal(const ::Rtool*)
-   {
-      ::Rtool *ptr = 0;
-      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::Rtool >(0);
-      static ::ROOT::TGenericClassInfo 
-         instance("Rtool", ::Rtool::Class_Version(), "Rtool.hh", 96,
-                  typeid(::Rtool), ::ROOT::Internal::DefineBehavior(ptr, ptr),
-                  &::Rtool::Dictionary, isa_proxy, 16,
-                  sizeof(::Rtool) );
-      instance.SetNew(&new_Rtool);
-      instance.SetNewArray(&newArray_Rtool);
-      instance.SetDelete(&delete_Rtool);
-      instance.SetDeleteArray(&deleteArray_Rtool);
-      instance.SetDestructor(&destruct_Rtool);
-      instance.SetStreamerFunc(&streamer_Rtool);
-      return &instance;
-   }
-   TGenericClassInfo *GenerateInitInstance(const ::Rtool*)
-   {
-      return GenerateInitInstanceLocal((::Rtool*)0);
-   }
-   // Static variable to force the class initialization
-   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::Rtool*)0x0); R__UseDummy(_R__UNIQUE_(Init));
-} // end of namespace ROOT
 
 namespace ROOT {
    static void delete_TextField(void *p);
@@ -166,40 +131,39 @@ namespace ROOT {
    static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::NumberFieldReal*)0x0); R__UseDummy(_R__UNIQUE_(Init));
 } // end of namespace ROOT
 
-//______________________________________________________________________________
-atomic_TClass_ptr Rtool::fgIsA(0);  // static to hold class pointer
+namespace ROOT {
+   static void *new_Rtool(void *p = 0);
+   static void *newArray_Rtool(Long_t size, void *p);
+   static void delete_Rtool(void *p);
+   static void deleteArray_Rtool(void *p);
+   static void destruct_Rtool(void *p);
+   static void streamer_Rtool(TBuffer &buf, void *obj);
 
-//______________________________________________________________________________
-const char *Rtool::Class_Name()
-{
-   return "Rtool";
-}
-
-//______________________________________________________________________________
-const char *Rtool::ImplFileName()
-{
-   return ::ROOT::GenerateInitInstanceLocal((const ::Rtool*)0x0)->GetImplFileName();
-}
-
-//______________________________________________________________________________
-int Rtool::ImplFileLine()
-{
-   return ::ROOT::GenerateInitInstanceLocal((const ::Rtool*)0x0)->GetImplFileLine();
-}
-
-//______________________________________________________________________________
-TClass *Rtool::Dictionary()
-{
-   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::Rtool*)0x0)->GetClass();
-   return fgIsA;
-}
-
-//______________________________________________________________________________
-TClass *Rtool::Class()
-{
-   if (!fgIsA.load()) { R__LOCKGUARD2(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::Rtool*)0x0)->GetClass(); }
-   return fgIsA;
-}
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::Rtool*)
+   {
+      ::Rtool *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::Rtool >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("Rtool", ::Rtool::Class_Version(), "Rtool.hh", 96,
+                  typeid(::Rtool), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::Rtool::Dictionary, isa_proxy, 16,
+                  sizeof(::Rtool) );
+      instance.SetNew(&new_Rtool);
+      instance.SetNewArray(&newArray_Rtool);
+      instance.SetDelete(&delete_Rtool);
+      instance.SetDeleteArray(&deleteArray_Rtool);
+      instance.SetDestructor(&destruct_Rtool);
+      instance.SetStreamerFunc(&streamer_Rtool);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::Rtool*)
+   {
+      return GenerateInitInstanceLocal((::Rtool*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::Rtool*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+} // end of namespace ROOT
 
 //______________________________________________________________________________
 atomic_TClass_ptr TextField::fgIsA(0);  // static to hold class pointer
@@ -307,37 +271,39 @@ TClass *NumberFieldReal::Class()
 }
 
 //______________________________________________________________________________
-void Rtool::Streamer(TBuffer &R__b)
-{
-   // Stream an object of class Rtool.
+atomic_TClass_ptr Rtool::fgIsA(0);  // static to hold class pointer
 
-   TGMainFrame::Streamer(R__b);
+//______________________________________________________________________________
+const char *Rtool::Class_Name()
+{
+   return "Rtool";
 }
 
-namespace ROOT {
-   // Wrappers around operator new
-   static void *new_Rtool(void *p) {
-      return  p ? new(p) ::Rtool : new ::Rtool;
-   }
-   static void *newArray_Rtool(Long_t nElements, void *p) {
-      return p ? new(p) ::Rtool[nElements] : new ::Rtool[nElements];
-   }
-   // Wrapper around operator delete
-   static void delete_Rtool(void *p) {
-      delete ((::Rtool*)p);
-   }
-   static void deleteArray_Rtool(void *p) {
-      delete [] ((::Rtool*)p);
-   }
-   static void destruct_Rtool(void *p) {
-      typedef ::Rtool current_t;
-      ((current_t*)p)->~current_t();
-   }
-   // Wrapper around a custom streamer member function.
-   static void streamer_Rtool(TBuffer &buf, void *obj) {
-      ((::Rtool*)obj)->::Rtool::Streamer(buf);
-   }
-} // end of namespace ROOT for class ::Rtool
+//______________________________________________________________________________
+const char *Rtool::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::Rtool*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int Rtool::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::Rtool*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *Rtool::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::Rtool*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *Rtool::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD2(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::Rtool*)0x0)->GetClass(); }
+   return fgIsA;
+}
 
 //______________________________________________________________________________
 void TextField::Streamer(TBuffer &R__b)
@@ -417,6 +383,39 @@ namespace ROOT {
    }
 } // end of namespace ROOT for class ::NumberFieldReal
 
+//______________________________________________________________________________
+void Rtool::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class Rtool.
+
+   TGMainFrame::Streamer(R__b);
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_Rtool(void *p) {
+      return  p ? new(p) ::Rtool : new ::Rtool;
+   }
+   static void *newArray_Rtool(Long_t nElements, void *p) {
+      return p ? new(p) ::Rtool[nElements] : new ::Rtool[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_Rtool(void *p) {
+      delete ((::Rtool*)p);
+   }
+   static void deleteArray_Rtool(void *p) {
+      delete [] ((::Rtool*)p);
+   }
+   static void destruct_Rtool(void *p) {
+      typedef ::Rtool current_t;
+      ((current_t*)p)->~current_t();
+   }
+   // Wrapper around a custom streamer member function.
+   static void streamer_Rtool(TBuffer &buf, void *obj) {
+      ((::Rtool*)obj)->::Rtool::Streamer(buf);
+   }
+} // end of namespace ROOT for class ::Rtool
+
 namespace {
   void TriggerDictionaryInitialization_RtoolDict_Impl() {
     static const char* headers[] = {
@@ -424,8 +423,8 @@ namespace {
 0
     };
     static const char* includePaths[] = {
-"/usr/local/Cellar/root6/6.06.04/include/root",
-"/Users/hasegawahiroaki/QAQC/NewRtool/NewRtool/",
+"/usr/local/Cellar/root6/6.08.06_1/include/root",
+"/Users/masahiroyamatani/Dropbox/QAQC/backup/NewRtool/",
 0
     };
     static const char* fwdDeclCode = R"DICTFWDDCLS(
@@ -434,10 +433,10 @@ namespace {
 #pragma clang diagnostic ignored "-Wignored-attributes"
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 extern int __Cling_Autoloading_Map;
-class __attribute__((annotate("$clingAutoload$Rtool.hh")))  Rtool;
 class __attribute__((annotate("$clingAutoload$Rtool.hh")))  TextField;
 class __attribute__((annotate("$clingAutoload$Rtool.hh")))  NumberFieldInt;
 class __attribute__((annotate("$clingAutoload$Rtool.hh")))  NumberFieldReal;
+class __attribute__((annotate("$clingAutoload$Rtool.hh")))  Rtool;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
 #line 1 "RtoolDict dictionary payload"
