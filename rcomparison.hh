@@ -22,7 +22,9 @@ private:
 
 void r_compare::map_ratio(){
 	FileStat_t info;
-	if( !gSystem->GetPathInfo(root_filename_map, info) ){
+	TFile *f_check = new TFile(root_filename_map);
+	TH1D *h_check = (TH1D*)f_check->Get("Ohmdist");
+	if( !gSystem->GetPathInfo(root_filename_map, info) && h_check){
 		delete preh1;
 		delete preh2;
 		f_map = new TFile(root_filename_map);
@@ -38,7 +40,7 @@ void r_compare::map_ratio(){
 			preh2 = new TH2D("preOhmMap","preOhmMap",3+currentRange,0,3+currentRange,10,0,10);
 		}
 	}else{
-		std::cout << "No comparison file exists." << std::endl;
+		std::cout << "No comparison file exists (or corrupted)." << std::endl;
 	}
 }
 
