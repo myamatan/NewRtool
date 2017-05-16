@@ -147,7 +147,7 @@ std::string getVal(const std::string query){
   //std::cout << "### read(" << query.length() << ")=" << query << std::endl;
   int count = write(fd, query.c_str(), query.length());
   char buf[BUFFSIZE];
-  usleep(50*1000);//100*1000
+  usleep(50*1000);
   count = read(fd, &buf, BUFFSIZE);  
   //std::cout << "### response(" << count << ")=" << buf << std::endl;
   // CMD_ACK<CR>VALUES<CR>
@@ -397,8 +397,8 @@ void Rtool::Update(){
   TThread::CancelPoint();
   //usleep(500*1000);//2Hz
   //usleep(200*1000);//5Hz
-  //usleep(1*1000);//500Hz
-  usleep(1*1000);//100kHz
+  usleep(5*1000);//500Hz
+  //usleep(1*1000);//100kHz
  }
 }
 
