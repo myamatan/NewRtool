@@ -498,6 +498,7 @@ void Rtool::Arbitral(){
 	int loop_fig3=1;
 	int value_handle;
 	int check_arbi;
+	count_Arbi++;
 	prlength = 5;
 	if( !isShifter ){
 
@@ -880,7 +881,8 @@ void Rtool::Arbitral(){
 		}
 
 		for(int i=0; i<check_pos.size(); i++){
-			//pos.erase( pos.begin() + check_pos[i] );
+			//if( i==0 ) pos.erase( pos.begin() + check_pos.at(i) );
+			//else pos.erase( pos.begin() + check_pos.at(i)-i );
 		}
 
 		//tr->Fill();
@@ -893,8 +895,7 @@ void Rtool::Arbitral(){
 		h1 = new TH1D("Ohmdist","Ohmdist",60, 0.0, 6.0);
 		for(int i=0; i<currentRange+probeRange; i++){//i=0; i<10+currentRange; i++
 			for(int j=1; j<10; j++){//j=0; j<10; j++
-				if( vec_vec[i][j-1] > 0.01 ) h1->Fill(vec_vec[i][j-1]);
-				
+				if( vec_vec[i][j-1] > 0.01 ) h1->Fill(vec_vec[i][j-1]);	
 			}
 		}
 		double v_mean = h1->GetMean();
@@ -923,8 +924,9 @@ void Rtool::Arbitral(){
 				double count_est=0.0;
 				double ax = pow((vec_vec[i][j-1]-v_mean)/v_rms, 2);
 				double avalue = TMath::ChisquareQuantile(0.95, 1);
-      				if( ax > avalue && lineCheck < 5 ){
+				if( ax > avalue && lineCheck < 5 && !lockR && count_Arbi>2){
 				//if( vec_vec[i][j-1] > 0.01 && vec_vec[i][j-1] > ul*0.8 ){
+					count_Arbi = 0;
 					if( i > 0 ){ 
 						if( vec_vec[i-1][j-1] > 0.01 && pow((vec_vec[i-1][j-1]-v_mean)/v_rms, 2) < avalue) v_est += vec_vec[i-1][j-1];
 						if( vec_vec[i-1][j-1] > 0.01 && pow((vec_vec[i-1][j-1]-v_mean)/v_rms, 2) < avalue) count_est += 1.0;
@@ -941,9 +943,9 @@ void Rtool::Arbitral(){
 						if( vec_vec[i][j] > 0.01 && pow((vec_vec[i][j]-v_mean)/v_rms, 2) < avalue ) v_est += vec_vec[i][j];
 						if( vec_vec[i][j] > 0.01 && pow((vec_vec[i][j]-v_mean)/v_rms, 2) < avalue ) count_est += 1.0;
 					}
-      					//h2->SetBinContent(i+1, 10-j, (v_est+vec_vec[i][j-1])/(count_est+1));// /1000 000
-					//vec_vec[i][j-1] = (v_est+vec_vec[i][j-1])/(count_est+1);
-      					h2->SetBinContent(i+1, 10-j, vec_vec[i][j-1]);// /1000 000
+      					h2->SetBinContent(i+1, 10-j, (v_est+vec_vec[i][j-1])/(count_est+1));// /1000 000
+					vec_vec[i][j-1] = (v_est+vec_vec[i][j-1])/(count_est+1);
+      					//h2->SetBinContent(i+1, 10-j, vec_vec[i][j-1]);// /1000 000
 				}else{
       					h2->SetBinContent(i+1, 10-j, vec_vec[i][j-1]);// /1000 000
 				}	
@@ -952,7 +954,7 @@ void Rtool::Arbitral(){
 			}
 			lineCheck = 0;
 		}
-      		double acce_ratio = N_acce*1.0/N_samp*100;
+    double acce_ratio = N_acce*1.0/N_samp*100;
 		std::vector<int> check_ohm;
     	  	int max = 0;
       		TString grade_ohm;
@@ -1018,8 +1020,8 @@ void Rtool::Arbitral(){
 			for(int j=1; j<10; j++){//j=0; j<10; j++
 				double ax = (pow((vec_vec[i][j-1]-v_mean)/v_rms, 2));
 				double avalue = TMath::ChisquareQuantile(0.95, 1);
-      				//if( vec_vec[i][j-1] < v_mean-5*v_rms || vec_vec[i][j-1] > v_mean+3*v_rms ){
-      				if( (ax > avalue && lineCheck < 5) || vec_vec[i][j-1] <= 0.0){
+      				//if( vec_vec[i][j-1] < v_mean-5*v_rms || vec_vec[i][j-1] > v_mean+3*v_rms || vec_vec[i][j-1]==0.0 ){
+      				if( (ax > avalue && lineCheck < 8) || vec_vec[i][j-1] < 0.0){
 					int A = (i-currentRange+scanrange0)*9 + j;
 					int B = A + 9 ;
 					bool overlap = false;
@@ -1042,6 +1044,8 @@ void Rtool::Arbitral(){
 			double er_value = vec_vec[currentRange-probeRange-scanrange0+(pos[i][0]-1)/9][pos[i][0]-(pos[i][0]-1)/9*9-1];
 			std::cout << "[" << pos[i][0] << ", " << pos[i][1] << "] : " << er_value << "[Mohm/sq]" << std::endl;	
 		}
+		if( pos.size() == 0 ) lockR = true;
+
 
 		canv_Dist->cd(1);
 		h1->Draw();
@@ -1091,6 +1095,9 @@ void Rtool::getOhmMap(){
 	}
 	
 	probeRange = scanrange - scanrange0 + 1;
+
+	count_Arbi = 0;
+	lockR = false;
       
 	//for Auto Range fix && getOhmMap--------------------------------
 	int count = 0;
@@ -1367,7 +1374,7 @@ void Rtool::getOhmMap(){
       		for(int j=1; j<10; j++){//j=0; j<10; j++
 			double ax = (pow((vec_vec[i][j-1]-v_mean)/v_rms, 2));
 			double avalue = TMath::ChisquareQuantile(0.95, 1);
-      			//if( vec_vec[i][j-1] < v_mean-5*v_rms || vec_vec[i][j-1] > v_mean+3*v_rms ){
+      			//if( vec_vec[i][j-1] < v_mean-5*v_rms || vec_vec[i][j-1] > v_mean+3*v_rms || vec_vec[i][j-1]==0.0 ){
       			if( ax > avalue && lineCheck < 8 ){
 				int A = (i-currentRange+scanrange0)*9 + j;
 				int B = A + 9 ;
@@ -1566,10 +1573,10 @@ void Rtool::SetNewfile(){
 	ss_pcb << IDn_pcb;
 	TString ID = TString(ss.str());
 	TString ID_pcb = TString(ss_pcb.str());
-	if( ss.str().size() == 1 ) ID = "0000" + ID;
-	else if( ss.str().size() == 2 ) ID = "000" + ID;
-	if( ss_pcb.str().size() == 1 ) ID_pcb = "00" + ID_pcb;
-	else if( ss_pcb.str().size() == 2 ) ID_pcb = "0" + ID_pcb;
+	if( ss.str().size() == 1 ) ID = initial_ID + "000" + ID;
+	else if( ss.str().size() == 2 ) ID = initial_ID + "00" + ID;
+	if( ss_pcb.str().size() == 1 ) ID_pcb = initial_ID + "0" + ID_pcb;
+	else if( ss_pcb.str().size() == 2 ) ID_pcb = initial_ID + ID_pcb;
 	
 	TString newfilename;
 	if (QC_loc =="JAPAN" ){

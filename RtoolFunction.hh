@@ -498,6 +498,7 @@ void Rtool::Arbitral(){
 	int loop_fig3=1;
 	int value_handle;
 	int check_arbi;
+	count_Arbi++;
 	prlength = 5;
 	if( !isShifter ){
 
@@ -923,8 +924,9 @@ void Rtool::Arbitral(){
 				double count_est=0.0;
 				double ax = pow((vec_vec[i][j-1]-v_mean)/v_rms, 2);
 				double avalue = TMath::ChisquareQuantile(0.95, 1);
-      				if( ax > avalue && lineCheck < 8 ){
+				if( ax > avalue && lineCheck < 5 && !lockR && count_Arbi>2){
 				//if( vec_vec[i][j-1] > 0.01 && vec_vec[i][j-1] > ul*0.8 ){
+					count_Arbi = 0;
 					if( i > 0 ){ 
 						if( vec_vec[i-1][j-1] > 0.01 && pow((vec_vec[i-1][j-1]-v_mean)/v_rms, 2) < avalue) v_est += vec_vec[i-1][j-1];
 						if( vec_vec[i-1][j-1] > 0.01 && pow((vec_vec[i-1][j-1]-v_mean)/v_rms, 2) < avalue) count_est += 1.0;
@@ -941,9 +943,9 @@ void Rtool::Arbitral(){
 						if( vec_vec[i][j] > 0.01 && pow((vec_vec[i][j]-v_mean)/v_rms, 2) < avalue ) v_est += vec_vec[i][j];
 						if( vec_vec[i][j] > 0.01 && pow((vec_vec[i][j]-v_mean)/v_rms, 2) < avalue ) count_est += 1.0;
 					}
-      					//h2->SetBinContent(i+1, 10-j, (v_est+vec_vec[i][j-1])/(count_est+1));// /1000 000
-					//vec_vec[i][j-1] = (v_est+vec_vec[i][j-1])/(count_est+1);
-      					h2->SetBinContent(i+1, 10-j, vec_vec[i][j-1]);// /1000 000
+      					h2->SetBinContent(i+1, 10-j, (v_est+vec_vec[i][j-1])/(count_est+1));// /1000 000
+					vec_vec[i][j-1] = (v_est+vec_vec[i][j-1])/(count_est+1);
+      					//h2->SetBinContent(i+1, 10-j, vec_vec[i][j-1]);// /1000 000
 				}else{
       					h2->SetBinContent(i+1, 10-j, vec_vec[i][j-1]);// /1000 000
 				}	
@@ -1042,6 +1044,8 @@ void Rtool::Arbitral(){
 			double er_value = vec_vec[currentRange-probeRange-scanrange0+(pos[i][0]-1)/9][pos[i][0]-(pos[i][0]-1)/9*9-1];
 			std::cout << "[" << pos[i][0] << ", " << pos[i][1] << "] : " << er_value << "[Mohm/sq]" << std::endl;	
 		}
+		if( pos.size() == 0 ) lockR = true;
+
 
 		canv_Dist->cd(1);
 		h1->Draw();
@@ -1091,6 +1095,9 @@ void Rtool::getOhmMap(){
 	}
 	
 	probeRange = scanrange - scanrange0 + 1;
+
+	count_Arbi = 0;
+	lockR = false;
       
 	//for Auto Range fix && getOhmMap--------------------------------
 	int count = 0;

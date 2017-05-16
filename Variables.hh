@@ -75,6 +75,9 @@ double muCa = mu0;
 double sd = sd0;
 //double sdHV = sd0;
 //double sdCa = sd0;
+bool lockR = false;
+int count_Arbi = 0;
+
 
 //for file name
 TString file;
