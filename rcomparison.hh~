@@ -22,8 +22,18 @@ private:
 
 void r_compare::map_ratio(){
 	FileStat_t info;
-	TFile *f_check = new TFile(root_filename_map);
-	TH1D *h_check = (TH1D*)f_check->Get("Ohmdist");
+	TFile *f_check;
+	TH1D *h_check;
+	TString rep_check = root_filename_map;
+	rep_check[26] = '1';
+	f_check = new TFile(rep_check);
+	h_check = (TH1D*)f_check->Get("Ohmdist");
+	if( !h_check ){
+		delete f_check;
+		delete h_check;
+		f_check = new TFile(root_filename_map);
+		h_check = (TH1D*)f_check->Get("Ohmdist");
+	}
 	if( !gSystem->GetPathInfo(root_filename_map, info) && h_check){
 		delete preh1;
 		delete preh2;
